@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://ttjgepgjtejd"]
+
+[ext_resource type="Script" uid="uid://dwsldio76ycd4" path="res://scripts/piece.gd" id="1_gebih"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tvnf0"]
+
+[node name="Piece" type="Node3D" unique_id=1289642930]
+script = ExtResource("1_gebih")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2004009309]
+transform = Transform3D(0.478, 0, 0, 0, 0.077, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("CylinderMesh_tvnf0")
+
+[node name="CoreMarker" type="Node3D" parent="." unique_id=1116022007]
+
+[node name="Label3D" type="Label3D" parent="CoreMarker" unique_id=778838216]
+transform = Transform3D(2, 0, 0, 0, 0.34090063, 1.9707326, 0, -1.9707326, 0.34090063, -0.03780812, 0.23577172, 0.012149692)
+modulate = Color(0.84769285, 0.28834918, 0, 1)
+outline_modulate = Color(1, 0.42034498, 0.35165048, 1)
+text = " ☆"
