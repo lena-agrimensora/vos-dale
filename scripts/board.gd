@@ -75,11 +75,7 @@ func create_cell(x: int, y: int) -> void:
 	var offset_x := (columns - 1) * 0.5
 	var offset_y := (rows - 1) * 0.5
 
-	cell.position = Vector3(
-		(x - offset_x) * cell_size,
-		0.0,
-		(y - offset_y) * cell_size
-	)
+	cell.position = Vector3((x - offset_x) * cell_size,	0.0,(y - offset_y) * cell_size)
 
 	cell.grid_position = Vector2i(x, y)
 
@@ -97,13 +93,9 @@ func world_to_grid(world_position: Vector3) -> Vector2i:
 	var offset_x := (columns - 1) * 0.5
 	var offset_y := (rows - 1) * 0.5
 
-	var grid_x := roundi(
-		world_position.x / cell_size + offset_x
-	)
+	var grid_x := roundi(world_position.x / cell_size + offset_x)
 
-	var grid_y := roundi(
-		world_position.z / cell_size + offset_y
-	)
+	var grid_y := roundi(world_position.z / cell_size + offset_y)
 
 	return Vector2i(grid_x, grid_y)
 
@@ -111,73 +103,55 @@ func world_to_grid(world_position: Vector3) -> Vector2i:
 
 func expand_to(new_columns: int, new_rows: int) -> void:
 
-	print(
-		"[Board] - Expandiendo tablero de ",
-		columns,
-		"x",
-		rows,
-		" a ",
-		new_columns,
-		"x",
-		new_rows
-	)
+	var old_cells := cells
 
 	var old_columns := columns
 	var old_rows := rows
 
-	var old_center_y := (old_rows - 1) / 2
-	var new_center_y := (new_rows - 1) / 2
-
-	var old_cells := cells.duplicate()
-
-	cells.clear()
-
 	columns = new_columns
 	rows = new_rows
 
+	cells = {}
+
+	var offset_x: int = (new_columns - old_columns) / 2
+	var offset_y: int = (new_rows - old_rows) / 2
+
 	for y in range(new_rows):
+
 		for x in range(new_columns):
 
-			var new_grid_position := Vector2i(x, y)
-
-			
-			if y == new_center_y:
-
-				var old_grid_position := Vector2i(
-					x,
-					old_center_y
-				)
-
-				if old_cells.has(old_grid_position):
-
-					var cell: Cell = old_cells[old_grid_position]
-
-					cell.grid_position = new_grid_position
-
-					var offset_x := (new_columns - 1) * 0.5
-					var offset_y := (new_rows - 1) * 0.5
-
-					cell.position = Vector3(
-						(x - offset_x) * cell_size,
-						0.0,
-						(y - offset_y) * cell_size
-					)
-
-					cells[new_grid_position] = cell
-
-					continue
-
-			
 			create_cell(x, y)
 
-	update_all_piece_positions()
 
-	print(
-		"[Board] - Expansión terminada: ",
-		columns,
-		"x",
-		rows
-	)
+	for old_position in old_cells:
+
+		var old_cell: Cell = old_cells[old_position]
+
+		var new_position := Vector2i(
+			old_position.x + offset_x,
+			old_position.y + offset_y
+		)
+
+		var new_cell: Cell = cells[new_position]
+
+		for piece in old_cell.pieces:
+
+			new_cell.pieces.append(piece)
+
+
+			piece.global_position = (
+				new_cell.global_position
+				+ Vector3.UP * 0.2
+			)
+
+		old_cell.queue_free()
+
+
+	for grid_position in cells:
+
+		update_piece_position(
+			cells[grid_position]
+		)
 
 
 func update_all_piece_positions() -> void:
@@ -218,35 +192,21 @@ func update_piece_position(cell: Cell) -> void:
 
 		var piece: Piece = cell.pieces[i]
 
-		piece.global_position = (
-			cell.global_position
-			+ Vector3.UP * (0.2 + i * 0.25)
-		)
+		piece.global_position = (cell.global_position+ Vector3.UP * (0.2 + i * 0.25))
 
 
-func get_neighbor_cell(
-	cell: Cell,
-	direction: Vector2i
-) -> Cell:
+func get_neighbor_cell(cell: Cell,direction: Vector2i) -> Cell:
 
-	var target_position := (
-		cell.grid_position + direction
-	)
+	var target_position := (cell.grid_position + direction)
 
 	return get_cell(target_position)
 
 
-func has_adjacent_piece_of_player(
-	cell: Cell,
-	player_id: int
-) -> bool:
+func has_adjacent_piece_of_player(cell: Cell,player_id: int) -> bool:
 
 	for direction in DIRECTIONS:
 
-		var neighbor := get_neighbor_cell(
-			cell,
-			direction
-		)
+		var neighbor := get_neighbor_cell(cell,direction)
 
 		if neighbor == null:
 			continue
@@ -266,12 +226,8 @@ func is_cell_empty(cell: Cell) -> bool:
 	return cell.pieces.is_empty()
 
 
-func is_piece_captured(
-	cell: Cell,
-	piece: Piece
-) -> bool:
+func is_piece_captured(cell: Cell,piece: Piece) -> bool:
 
-	
 	if piece.current_type == Piece.PIECE_TYPE.CORE:
 		return false
 
@@ -289,10 +245,7 @@ func is_piece_captured(
 			pair[1]
 		)
 
-		if first_cell == null:
-			continue
-
-		if second_cell == null:
+		if first_cell == null or second_cell == null:
 			continue
 
 		if first_cell.pieces.is_empty():
@@ -301,13 +254,8 @@ func is_piece_captured(
 		if second_cell.pieces.is_empty():
 			continue
 
-		var first_piece: Piece = (
-			first_cell.pieces.back()
-		)
-
-		var second_piece: Piece = (
-			second_cell.pieces.back()
-		)
+		var first_piece: Piece = first_cell.pieces.back()
+		var second_piece: Piece = second_cell.pieces.back()
 
 		if (
 			first_piece.player_id == enemy_id
@@ -318,9 +266,7 @@ func is_piece_captured(
 	return false
 
 
-func get_captured_pieces_around(
-	cell: Cell
-) -> Array[Piece]:
+func get_captured_pieces_around(cell: Cell) -> Array[Piece]:
 
 	var captured: Array[Piece] = []
 
@@ -339,7 +285,7 @@ func get_captured_pieces_around(
 
 		var piece: Piece = neighbor.pieces.back()
 
-		if piece.player_id == -1:
+		if piece.current_type == Piece.PIECE_TYPE.CORE:
 			continue
 
 		if is_piece_captured(neighbor, piece):
@@ -357,3 +303,18 @@ func _on_cell_clicked(cell: Cell) -> void:
 	)
 
 	cell_clicked.emit(cell)
+
+func reposition_cells() -> void:
+
+	var offset_x := (columns - 1) * 0.5
+	var offset_y := (rows - 1) * 0.5
+
+	for grid_position in cells:
+
+		var cell: Cell = cells[grid_position]
+
+		cell.position = Vector3(
+			(grid_position.x - offset_x) * cell_size,
+			0.0,
+			(grid_position.y - offset_y) * cell_size
+		)

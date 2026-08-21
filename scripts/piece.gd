@@ -24,6 +24,7 @@ func set_player(value: int) -> void:
 			set_piece_color(Color.BLACK)
 
 
+
 func set_piece_type(type: PIECE_TYPE) -> void:
 	current_type = type
 

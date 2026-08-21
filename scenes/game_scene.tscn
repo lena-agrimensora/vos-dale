@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://5bj62238t6ya"]
 
+[ext_resource type="PackedScene" uid="uid://75mshkwanbq" path="res://scenes/GameUI.tscn" id="1_rurhu"]
 [ext_resource type="Script" uid="uid://dyswndqsv4k0k" path="res://scripts/board.gd" id="1_w5aja"]
 [ext_resource type="PackedScene" uid="uid://ttjgepgjtejd" path="res://scenes/piece.tscn" id="2_bw6k5"]
 [ext_resource type="PackedScene" uid="uid://dosi2xjnnps0y" path="res://scenes/cell.tscn" id="2_onqr8"]
@@ -13,23 +14,28 @@ background_energy_multiplier = 2.0
 
 [node name="Main" type="Node3D" unique_id=2043058477]
 
-[node name="GameManager" type="Node" parent="." unique_id=338214196 node_paths=PackedStringArray("game_controller", "board", "camera")]
+[node name="CanvasLayer" parent="." unique_id=1316195019 instance=ExtResource("1_rurhu")]
+
+[node name="GameManager" type="Node" parent="." unique_id=338214196 node_paths=PackedStringArray("board", "game_controller", "camera")]
 script = ExtResource("3_ycayy")
-game_controller = NodePath("../GameController")
 board = NodePath("../Board")
+game_controller = NodePath("../GameController")
 piece_scene = ExtResource("2_bw6k5")
 camera = NodePath("../Camera3D")
 
-[node name="GameController" type="Node" parent="." unique_id=555560069 node_paths=PackedStringArray("board")]
+[node name="GameController" type="Node" parent="." unique_id=555560069 node_paths=PackedStringArray("board", "game_ui")]
 script = ExtResource("5_y3j0m")
 board = NodePath("../Board")
 piece_scene = ExtResource("2_bw6k5")
+game_ui = NodePath("../CanvasLayer")
+turns_until_expansion = 30
+phase_3_pieces_per_turn = 3
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=749261362]
 environment = SubResource("Environment_onqr8")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1704305209]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 17.907879, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 15, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2056991220]
 transform = Transform3D(0.8660254, 0.43301272, -0.25, 0, 0.49999997, 0.86602545, 0.5, -0.75, 0.4330127, 0, 0, 0)

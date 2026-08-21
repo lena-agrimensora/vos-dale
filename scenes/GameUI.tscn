@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://75mshkwanbq"]
+
+[ext_resource type="Script" uid="uid://dukhqn6uindk2" path="res://scripts/game_ui.gd" id="1_jkspe"]
+
+[node name="CanvasLayer" type="CanvasLayer" unique_id=1316195019]
+script = ExtResource("1_jkspe")
+
+[node name="Player1Panel" type="PanelContainer" parent="." unique_id=1319803357]
+anchors_preset = -1
+anchor_right = 0.202
+anchor_bottom = 0.172
+offset_right = 0.15997314
+offset_bottom = 0.23999023
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Player1Panel" unique_id=199138225]
+layout_direction = 2
+layout_mode = 2
+alignment = 1
+
+[node name="Name" type="Label" parent="Player1Panel/VBoxContainer" unique_id=1586329123]
+layout_mode = 2
+text = "Player 1 - White"
+horizontal_alignment = 1
+
+[node name="PieceCount" type="Label" parent="Player1Panel/VBoxContainer" unique_id=1510582826]
+layout_mode = 2
+text = "Pieces: 0"
+horizontal_alignment = 1
+
+[node name="ChainMultiplier" type="Label" parent="Player1Panel/VBoxContainer" unique_id=871606287]
+layout_mode = 2
+text = "x1"
+horizontal_alignment = 1
+
+[node name="Score" type="Label" parent="Player1Panel/VBoxContainer" unique_id=48444144]
+layout_mode = 2
+text = "Total Score: 0"
+horizontal_alignment = 1
+
+[node name="Timer" type="Label" parent="Player1Panel/VBoxContainer" unique_id=1752826691]
+layout_mode = 2
+text = "5:00"
+horizontal_alignment = 1
+
+[node name="Player2Panel" type="PanelContainer" parent="." unique_id=2121968433]
+anchors_preset = -1
+anchor_left = 0.79700005
+anchor_right = 0.9990001
+anchor_bottom = 0.172
+offset_left = -0.2401123
+offset_right = -0.080078125
+offset_bottom = 0.23999023
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Player2Panel" unique_id=542705484]
+layout_direction = 2
+layout_mode = 2
+alignment = 1
+
+[node name="Name" type="Label" parent="Player2Panel/VBoxContainer" unique_id=1584565953]
+layout_mode = 2
+text = "Player 2 - Black"
+horizontal_alignment = 1
+
+[node name="PieceCount" type="Label" parent="Player2Panel/VBoxContainer" unique_id=103496302]
+layout_mode = 2
+text = "Pieces: 0"
+horizontal_alignment = 1
+
+[node name="ChainMultiplier" type="Label" parent="Player2Panel/VBoxContainer" unique_id=132011075]
+layout_mode = 2
+text = "x1"
+horizontal_alignment = 1
+
+[node name="Score" type="Label" parent="Player2Panel/VBoxContainer" unique_id=1518787123]
+layout_mode = 2
+text = "Total Score: 0"
+horizontal_alignment = 1
+
+[node name="Timer" type="Label" parent="Player2Panel/VBoxContainer" unique_id=811699988]
+layout_mode = 2
+text = "5:00"
+horizontal_alignment = 1
+
+[node name="CenterPanel" type="PanelContainer" parent="." unique_id=1443342043]
+anchors_preset = -1
+anchor_left = 0.39800003
+anchor_right = 0.601
+anchor_bottom = 0.094000004
+offset_left = 0.8399658
+offset_top = -2.0
+offset_right = -0.92004395
+offset_bottom = -0.5200043
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterPanel" unique_id=1423436806]
+layout_direction = 2
+layout_mode = 2
+alignment = 1
+
+[node name="PhaseLabel" type="Label" parent="CenterPanel/VBoxContainer" unique_id=1343200310]
+layout_mode = 2
+text = "Setup Phase"
+horizontal_alignment = 1
+
+[node name="TurnLabel" type="Label" parent="CenterPanel/VBoxContainer" unique_id=1815899532]
+layout_mode = 2
+text = "Turn: 1"
+horizontal_alignment = 1
+
+[node name="ExpansionLabel" type="Label" parent="CenterPanel/VBoxContainer" unique_id=1640733478]
+layout_mode = 2
+text = "exp:"
+horizontal_alignment = 1
+
+[node name="PiecesRemainingLabel" type="Label" parent="CenterPanel/VBoxContainer" unique_id=846595409]
+layout_mode = 2
+text = "Pieces remaining this turn:"
+horizontal_alignment = 1

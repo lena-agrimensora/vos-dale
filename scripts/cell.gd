@@ -19,7 +19,7 @@ func get_tower_height() -> int:
 
 func add_piece(piece: Piece) -> void:
 	if piece == null:
-		push_error("[Cell] Intento de agregar una Piece nula.")
+		push_error("[Cell] - Intento de agregar una Piece nula.")
 		return
 
 	pieces.append(piece)
