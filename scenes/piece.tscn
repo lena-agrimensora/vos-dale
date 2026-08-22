@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ttjgepgjtejd"]
 
 [ext_resource type="Script" uid="uid://dwsldio76ycd4" path="res://scripts/piece.gd" id="1_gebih"]
+[ext_resource type="Texture2D" uid="uid://bhehq8pquhpit" path="res://assets/star_trans.png" id="2_s58gp"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_tvnf0"]
 
@@ -13,8 +14,6 @@ mesh = SubResource("CylinderMesh_tvnf0")
 
 [node name="CoreMarker" type="Node3D" parent="." unique_id=1116022007]
 
-[node name="Label3D" type="Label3D" parent="CoreMarker" unique_id=778838216]
-transform = Transform3D(2, 0, 0, 0, 0.34090063, 1.9707326, 0, -1.9707326, 0.34090063, -0.03780812, 0.23577172, 0.012149692)
-modulate = Color(0.84769285, 0.28834918, 0, 1)
-outline_modulate = Color(1, 0.42034498, 0.35165048, 1)
-text = " ☆"
+[node name="Sprite3D" type="Sprite3D" parent="CoreMarker" unique_id=1076089352]
+transform = Transform3D(0.1, 0, 0, 0, 0.008635595, 0.09962644, 0, -0.09962644, 0.008635595, 0, 0.2, 0)
+texture = ExtResource("2_s58gp")

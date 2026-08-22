@@ -231,8 +231,7 @@ func try_place_piece(cell: Cell,slot: int) -> bool:
 
 	else:
 
-		print("[GameController] - Player ",current_player + 1," todavía puede colocar ",pieces_left_this_turn," ficha(s)"
-		)
+		print("[GameController] - Player ",current_player + 1," todavía puede colocar ",pieces_left_this_turn," ficha(s)")
 
 
 	return true
@@ -276,13 +275,19 @@ func create_piece() -> Piece:
 	piece.set_player(current_player)
 
 	if current_phase == GAME_PHASE.CORE_PLACEMENT:
-
 		piece.set_piece_type(Piece.PIECE_TYPE.CORE)
-
 	else:
-
 		piece.set_piece_type(Piece.PIECE_TYPE.NORMAL)
 
+
+	return piece
+
+func create_core_piece(player: PLAYER) -> Piece:
+
+	var piece: Piece = piece_scene.instantiate()
+
+	piece.set_player(player)
+	piece.set_piece_type(Piece.PIECE_TYPE.CORE)
 
 	return piece
 
@@ -514,18 +519,41 @@ func finish_core_phase() -> void:
 
 func finish_phase_3_expansion() -> void:
 
-	board.expand_to(phase_3_board_size,phase_3_board_size)
+	print("[GameController] - ===========================")
+	print("[GameController] - EXPANSIÓN A FASE 3")
+	print("[GameController] - ===========================")
+
+	board.expand_to(
+		phase_3_board_size,
+		phase_3_board_size
+	)
+
+	print(
+		"[GameController] - Tablero expandido a ",
+		phase_3_board_size,
+		"x",
+		phase_3_board_size
+	)
+
+	spawn_comeback_cores()
 
 	current_phase = GAME_PHASE.EXPANDED_PLAY
+
 	pieces_left_this_turn = phase_3_pieces_per_turn
 
 	phase_changed.emit(current_phase)
 
-
 	if game_ui != null:
 
-		game_ui.update_phase("FASE 3 - EXPANSION")
+		game_ui.update_phase(
+			"FASE 3 - EXPANSION"
+		)
+
 		game_ui.update_expansion_turns(0)
+
+		game_ui.update_pieces_remaining(
+			pieces_left_this_turn
+		)
 
 
 func switch_player() -> void:
@@ -566,3 +594,183 @@ func zoom_for_phase_3() -> void:
 	var tween := create_tween()
 
 	tween.tween_property(camera,"position:y",camera.position.y * 1.10,0.8)
+
+func spawn_comeback_cores() -> void:
+
+	var corners: Array[Vector2i] = board.get_corner_positions()
+
+	if corners.is_empty():
+		print(
+			"[GameController] - El tablero no tiene esquinas."
+		)
+		return
+
+	var player_1_score: float = get_player_score(
+		PLAYER.ONE
+	)
+
+	var player_2_score: float = get_player_score(
+		PLAYER.TWO
+	)
+
+	print(
+		"[GameController] - Score antes del comeback: ","P1 = ", player_1_score," | P2 = ", player_2_score)
+
+
+	if is_equal_approx(player_1_score,player_2_score):
+
+		place_comeback_cores(corners,PLAYER.ONE,1)
+
+		place_comeback_cores(corners,PLAYER.TWO,1)
+
+		return
+
+	var losing_player: PLAYER
+	var winning_player: PLAYER
+
+	if player_1_score < player_2_score:
+
+		losing_player = PLAYER.ONE
+		winning_player = PLAYER.TWO
+
+	else:
+
+		losing_player = PLAYER.TWO
+		winning_player = PLAYER.ONE
+
+	var free_corner_count: int = 0
+
+	for corner in corners:
+
+		var cell: Cell = board.get_cell(corner)
+
+		if cell != null and cell.pieces.is_empty():
+			free_corner_count += 1
+
+
+	print("[GameController] - Esquinas libres: ",free_corner_count,"/",corners.size())
+
+
+	var losing_cores: int = 0
+	var winning_cores: int = 0
+
+	match free_corner_count:
+
+		4, 3:
+			losing_cores = 2
+			winning_cores = 1
+
+		2:
+			losing_cores = 1
+			winning_cores = 1
+
+		1:
+			losing_cores = 1
+			winning_cores = 0
+
+		_:
+			return
+
+	place_comeback_cores(
+		corners,
+		losing_player,
+		losing_cores
+	)
+
+	place_comeback_cores(
+		corners,
+		winning_player,
+		winning_cores
+	)
+
+func spawn_core_at(
+	grid_position: Vector2i,
+	player: PLAYER
+) -> bool:
+
+	var cell: Cell = board.get_cell(grid_position)
+
+	if cell == null:
+		print(
+			"[GameController] - No existe Cell en ",
+			grid_position
+		)
+		return false
+
+	if not cell.pieces.is_empty():
+
+		print(
+			"[GameController] - No se puede colocar CORE en ",
+			grid_position,
+			": la esquina ya está ocupada."
+		)
+
+		return false
+
+	var piece: Piece = create_core_piece(player)
+
+	if piece == null:
+		push_error(
+			"[GameController] - No se pudo crear CORE."
+		)
+
+		return false
+
+	var placed: bool = board.place_piece(
+		cell,
+		piece
+	)
+
+	if not placed:
+
+		piece.queue_free()
+
+		print(
+			"[GameController] - Board rechazó CORE en ",
+			grid_position
+		)
+
+		return false
+
+
+	print(
+		"[GameController] - CORE de Player ",
+		player + 1,
+		" apareció en ",
+		grid_position
+	)
+
+	return true
+
+func place_comeback_cores(
+	corners: Array[Vector2i],
+	player: PLAYER,
+	amount: int
+) -> void:
+
+	var placed: int = 0
+
+	for corner in corners:
+
+		if placed >= amount:
+			break
+
+		var cell: Cell = board.get_cell(corner)
+
+		if cell == null:
+			continue
+
+		if not cell.pieces.is_empty():
+			continue
+
+		if spawn_core_at(corner, player):
+			placed += 1
+
+
+	print(
+		"[GameController] - Player ",
+		player + 1,
+		" recibió ",
+		placed,
+		" CORE(s) de comeback."
+	)

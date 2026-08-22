@@ -318,3 +318,29 @@ func reposition_cells() -> void:
 			0.0,
 			(grid_position.y - offset_y) * cell_size
 		)
+
+func get_corner_positions() -> Array[Vector2i]:
+	var max_x := columns - 1
+	var max_y := rows - 1
+
+	return [
+		Vector2i(0, 0),
+		Vector2i(max_x, 0),
+		Vector2i(0, max_y),
+		Vector2i(max_x, max_y)
+	]
+
+func get_free_corners() -> Array[Vector2i]:
+	var free_corners: Array[Vector2i] = []
+
+	for corner in get_corner_positions():
+
+		var cell: Cell = get_cell(corner)
+
+		if cell == null:
+			continue
+
+		if cell.pieces.is_empty():
+			free_corners.append(corner)
+
+	return free_corners
